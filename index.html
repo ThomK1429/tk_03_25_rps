@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<!-- Tom Keel - inspired from 03-javascript topic 23. 
+	 Rock Paper Scissors
+	 completed 2018 05 19
+	 https://en.wikipedia.org/wiki/Rock%E2%80%93paper%E2%80%93scissors
+
+	 Links:
+	 https://en.wikipedia.org/wiki/Rock%E2%80%93paper%E2%80%93scissors
+	 https://www.w3schools.com/js/js_switch.asp
+	 https://www.w3schools.com/js/js_functions.asp
+	 https://www.w3schools.com/js/tryit.asp?filename=tryjs_farenheit_to_celsius_2
+	 https://www.w3schools.com/js/js_strict.asp
+	 https://www.rapidtables.com/web/html/html-codes/html-code-copyright.html
+  -->
+<html>
+<head>
+	<title>TK  -R, P, S-</title>
+	<style>
+		body  {
+	 		background-color: powderblue;
+		} 
+	
+		h1, p  {
+			margin: 0 auto;
+			width: 60%;
+			text-align: center;
+		}
+
+		#container {
+		   position: relative;
+		}
+
+		#background {
+			font-size: 600px;
+			filter: alpha(opacity=10);
+			opacity: 0.05;
+		 	text-align: center;  
+		 	position: absolute;
+
+		   top: 0;
+		   left: 0;
+		   bottom: 0;
+		   right: 0;
+		   z-index: -1;
+		   overflow: hidden;
+
+		   text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+		}
+
+	</style>
+ 
+</head>
+<body>
+
+<div id="container">
+    <div id="background">
+    
+    </div>
+
+
+
+		<br>
+		<h1>TK'S </h1>
+		<h1>ROCK, PAPER, SCISSORS</h1>   
+		<h1>GAME</h1>
+
+		<br>.
+
+		<p id="enterMsg"> Enter r, p, or s  to play the game. <br> Enter e to reset the game and stats. </p> 
+		<div id="gameBoard"></div>
+
+ 	</div>
+
+	<script>
+		// define variables
+		var validChoice  = ["r", "p", "s"];
+
+		var userChoice = "";
+		var computerChoice = "";
+
+		var winLossTieErrorMsg = "";
+		var statusMsg = " ";
+
+		var ctrWins = 0;
+		var ctrLosses = 0;
+		var ctrTies = 0;
+		var totalPlays = 0;
+
+		var arrowWin = "";
+		var arrowLoss = "";
+		var arrowTie = "";
+
+		var arrowWinBefore = "";
+		var arrowWinAfter = "";
+
+		var arrowLossBefore = "";
+		var arrowLossAfter = "";
+
+		var arrowTieBefore = "";
+		var arrowTieAfter = "";
+
+		var html = "";
+
+				
+		// This function is run whenever the user presses a key.
+    	document.onkeyup = function(event) {
+			// user depressed a key, insure lowercase
+		    userChoice = event.key.toLowerCase(); 
+
+
+		    // set background with the letter typed in uppercase
+		    if (userChoice == 'r' || userChoice == 'p' || userChoice == 's'  ) {  // but only allow r, p, or s
+		    	document.querySelector("#background").innerHTML = userChoice.toUpperCase();
+		    } else {
+		    	document.querySelector("#background").innerHTML = " ";
+		    }
+		    
+
+		    //alert("user choice : " + userChoice);
+		       
+		    //computer choice
+		    computerChoice = 	validChoice[Math.floor(Math.random() * validChoice.length)];	
+		    //computerChoice = validChoice[1];			
+		    //alert("computer choice : " + computerChoice);
+		     
+		    //Initialize the msgs
+		    initMsgs();
+		      	 
+      
+		    // determine if win, loss, tie
+		     	if (userChoice == computerChoice)  // tie game
+		     		{ loadArrows("tie"); 
+		     		updateStatusMsg("&nbsp;");
+		     	}		
+		            else if ((userChoice == "r" && computerChoice == "s" ) || 	 // rock beats scissors
+			        		 (userChoice == "s" && computerChoice == "p" ) ||	 // scissors beats paper
+			        		 (userChoice == "p" && computerChoice == "r" ))  	 // paper beats rock
+			        	{ loadArrows("win"); 
+			        	  updateStatusMsg("win");
+			    		}
+
+			        else if ((computerChoice == "r" && userChoice == "s" ) || 	 // rock beats scissors
+			        		 (computerChoice == "s" && userChoice == "p" ) ||	 // scissors beats paper
+			        		 (computerChoice == "p" && userChoice == "r" ))  	 // paper beats rock
+			        	{ loadArrows("loss");
+			         	  updateStatusMsg("loss");
+			            } 			        	 
+			        //else  winLossTieErrorMsg =   "THIS SHOULD NOT HAPPEN!!!";
+			        else  { 
+			        	if (userChoice == 'e' ) { // reset game
+			        			resetGame();
+				        	}	
+				          else{		
+			        			winLossTieErrorMsg = "*** Error - only 'r', 's', 'p' are valid input characters, try again. *** ";
+			        		}
+
+			        	}
+
+
+			        setDisplayHtml();
+
+			  }
+
+			  resetGame();
+			  setDisplayHtml();		// first time
+
+
+			function initMsgs() {
+				//Initialize the msgs
+				winLossTieErrorMsg ="";
+				arrowWinBefore = "";
+				arrowWinAfter = "";
+				arrowLossBefore = "";
+				arrowLossAfter = "";
+				arrowTieBefore = "";
+				arrowTieAfter = "";
+				userChoiceError = " ";
+				statusMsg = " ";
+			}
+
+
+		 	function loadArrows(status) {
+		 		switch(status) {
+		 			case "win": 
+		 				ctrWins++;
+					    winLossTieErrorMsg = "You WIN!!!";
+					    arrowWinBefore = "==>&nbsp;&nbsp;&nbsp;&nbsp;";
+					    arrowWinAfter = "&nbsp;&nbsp;&nbsp;&nbsp;<==";
+					    break;
+					case "loss": 
+		 				ctrLosses++;
+					    winLossTieErrorMsg =   "You LOSE!!! ";
+					    arrowLossBefore = "==>&nbsp;&nbsp;&nbsp;&nbsp;";
+					    arrowLossAfter = "&nbsp;&nbsp;&nbsp;&nbsp;<==";
+					    break;    
+					case "tie": 
+				      	ctrTies++;
+				      	winLossTieErrorMsg = "The game is a TIE!!!";
+				      	arrowTieBefore = "==>&nbsp;&nbsp;&nbsp;&nbsp;";
+					    arrowTieAfter = "&nbsp;&nbsp;&nbsp;&nbsp;<==";
+					    break;        
+		 		}
+
+		 		totalPlays++;
+
+
+		 	}
+
+
+		 	function resetGame(){
+		 		ctrWins = 0;			ctrLosses = 0;				ctrTies = 0;
+			    userChoice = "";		computerChoice = "";		html = "";
+			    totalPlays = 0.000001;	// prevents division by zero
+			    winLossTieErrorMsg =   "It's a new day and a new game!!!!<br>";
+
+			    // no background letter upon game reset
+			    document.querySelector("#background").innerHTML = " ";
+
+		 	}
+
+
+		 	function setDisplayHtml () {
+		        html = 
+                           
+					" <br>" + 
+					"<p>User Choice : " + userChoice +  "</p>" + 
+					"<p>Computer Choice : " + computerChoice + "</p>" + 
+					" <br>"  +  "<br>" +  					
+					"<p>" +  winLossTieErrorMsg  + "</p>" + 
+					"<p>" +  statusMsg  + "</p>" + 
+					" <br>"  +  "<br>" + 
+
+					"<p>" + arrowWinBefore  + "Wins : " + ctrWins + "&nbsp;&nbsp; - &nbsp;&nbsp" +
+						(ctrWins / totalPlays *100).toFixed(0) + "%" + arrowWinAfter + "</p>" + 
+
+					"<p>" + arrowLossBefore + "Losses : " + ctrLosses + "&nbsp;&nbsp; - &nbsp;&nbsp" +
+						(ctrLosses / totalPlays *100).toFixed(0) + "%" + arrowLossAfter + "</p>" + 
+					"<p>" + arrowTieBefore + "Ties : " + ctrTies + "&nbsp;&nbsp; - &nbsp;&nbsp" +
+						(ctrTies / totalPlays *100).toFixed(0) + "%" +  arrowTieAfter + "</p>"  +
+					" <br>"  +  "<br>" + 
+
+					"<p>TOTAL plays : " + totalPlays.toFixed(0) + "</p>" +
+					" <br> <br><br> <br><br> <br>" + 
+					"<p>&copy; 2018 Tom Keel.calm<p><br>" +
+					"<p><a href='https://en.wikipedia.org/wiki/Rock%E2%80%93paper%E2%80%93scissors'" + 
+					" target='_blank'>" +  	"Wiki: Rock, Paper, Scissors" + 	"</a></p>"  ; 
+					
+
+				 
+				document.querySelector("#gameBoard").innerHTML = html;	
+
+		 	}
+
+
+		 	function updateStatusMsg(status){
+		 		statusMsg = " &nbsp";
+		 		if (status == "win"){
+		 			if(userChoice == "r") statusMsg = "Rock Beats Scissors";
+			    		else  if(userChoice == "s") statusMsg = "Scissors Beats Paper"; 
+			    			else  if(userChoice == "p") statusMsg = "Paper Beats Rock";  
+		 		}
+
+		 		if (status == "loss"){
+		 			if(computerChoice == "r") statusMsg = "Rock Beats Scissors";
+			    		else if(computerChoice == "s") statusMsg = "Scissors Beats Paper"; 
+			    		   else if(computerChoice == "p") statusMsg = "Paper Beats Rock";  
+
+		 		}
+		 	}
+ 
+	</script>
+
+</body>
+</html>
